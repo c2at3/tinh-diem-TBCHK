@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="jquery.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('[name="soLuong"]').keypress(function(event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    xuLy();
+                }
+            });
+            $("#ok").click(function() {
+                xuLy();
+            });
+        });
+
+        function xuLy() {
+            soLuong = $("#soLuong").val();
+            soLuong = parseInt(soLuong);
+            $('.container.mt-4.mb-4.bang-tinh').css('display', 'block');
+            $('.card-body.bang-tinh').empty();
+            $('.card-body.bang-tinh').append(`
+                <p class="h1 text-center">
+                    Bảng tính điểm trung bình Chung học kì
+                </p>
+                <div class="input-inf"></div>
+                <input type="button" class="btn btn-dark btn-lg btn-block mt-4" value="Tính điểm TBCHK" onclick="tinhDiem();">`);
+            //mon();
+            for (var i = 0; i < soLuong; i++) {
+                $(".input-inf").append(`
+                    <div class="input-group mt-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Môn ` + (i + 1) + `</span>
+                        </div>
+                        <input type="number" class="form-control" name="soTin" placeholder="Số tín chỉ">
+                        <select name="diem" class="custom-select" id="inputGroupSelect01">
+                            <option selected="selected" value="-1">Điểm chữ</option>
+                            <option value="4">A</option>
+                            <option value="3">B</option>
+                            <option value="2">C</option>
+                            <option value="1">D</option>
+                            <option value="0">F</option>
+                        </select>
+                    </div>`);
+            }
+        }
+
+        var soLuong = 0;
+        var tongTinChi = 0;
+        var tichLuy = 0;
+        var soTin = 0;
+        var diemChu = 0;
+
+        function tinhDiem() {
+            $('.container.mt-4.mb-4.diem').css('display', 'block');
+            tongTinChi = 0;
+            var dem = 0;
+            soTin = $('[name="soTin"]');
+            diemChu = $('[name="diem"]');
+            for (var i = 0; i < soTin.length; i++) {
+                if (soTin[i].value == '' || diemChu[i].value == '-1' || soTin[i].value < 0) {
+                    soTin[i].value = 0;
+                    diemChu[i].value = 0;
+                    thongBaoLoi();
+                } else {
+                    tongTinChi += parseInt(soTin[i].value);
+                    console.log('số tin từng vòng: ' + tongTinChi)
+                    dem++;
+                    console.log("dem = " + dem)
+                }
+            }
+            if (dem == soLuong) {
+                ketQua();
+            } else {
+                thongBaoLoi();
+            }
+        }
+
+        function ketQua() {
+            if (tongTinChi != 0) {
+                soTin = $('[name="soTin"]');
+                diemChu = $('[name="diem"]');
+                for (var i = 0; i < diemChu.length; i++) {
+                    console.log("số tín vòng: " + soTin[i].value)
+                    tichLuy += (soTin[i].value * diemChu[i].value) / tongTinChi;
+                    console.log("Tích lũy vòng: " + tichLuy)
+                    console.log("diem chu: " + diemChu[i].value)
+                }
+            } else {
+                tichLuy = 0;
+            }
+            console.log('tin chi: ' + tongTinChi)
+            console.log('tich luy: ' + tichLuy)
+            $('.card-body.diem').empty();
+            $('.card-body.diem').append(`<p class="h2 text-center text-success">Tổng số tín chỉ ` + tongTinChi + `. Điểm tích lũy: ` + Math.round(tichLuy * 1000) / 1000 + ` </p>`);
+            tichLuy = 0;
+            tongTinChi = 0;
+        }
+
+        function thongBaoLoi() {
+            $('.card-body.diem').empty();
+            $('.card-body.diem').append(`<p class="h1 text-center text-danger">Chưa nhập đủ dữ liệu kìa má !</p>`);
+        }
+    </script>
+    <title>Caculator</title>
+</head>
+
+<body>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Active</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">Dropdown</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+    </ul>
+    <div class="container mt-4">
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" data-toggle="popover" title="Nhập một số là SỐ và LỚN HƠN 0" data-content="Số lớn hơn 0">
+                    <svg class="bi bi-question-circle" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 15A7 7 0 108 1a7 7 0 000 14zm0 1A8 8 0 108 0a8 8 0 000 16z" clip-rule="evenodd"/>
+                        <path d="M5.25 6.033h1.32c0-.781.458-1.384 1.36-1.384.685 0 1.313.343 1.313 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.007.463h1.307v-.355c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.326 0-2.786.647-2.754 2.533zm1.562 5.516c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                    </svg>
+                </span>
+            </div>
+            <input type="number" name="soLuong" id="soLuong" class="form-control mr-sm-2" placeholder="Tổng số môn học" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <input class="btn btn-outline-success my-2 my-sm-0" id="ok" type="button" value="OK !">
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4 mb-4 bang-tinh" style="display: none;">
+        <div class="card">
+            <div class="card-body bang-tinh">
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4 mb-4 diem" style="display: none;">
+        <div class="card">
+            <div class="card-body diem">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
